@@ -1,1 +1,61 @@
 # halite
+
+# Strategies
+
+## Behaviors
+Our theory is that ships will have a behavior assigned to them by some higher level strategy engine. The behaviors will probably be things like
+
+* Mine
+* Return
+* Harrass
+* Border Patrol
+
+The most important one to begin with is mining.
+
+## Mining Strategies
+
+### Greedy Algorithms
+
+There are three greedy objectives that need to be balanced
+
+1. Should I stay on my current cell?
+2. Should I move toward the best cell (closest distance, most halite)?
+3. Should I move toward the biggest cluster of halite?
+
+An optimal path probably involves walking toward the largest cluster and ocasionally mining a bit on the way. When you hit a particularly large halite cell then you may need to mine it for several turns before moving on.
+
+My proposal for greedy mining is to use best cell for short range planning and biggest cluster for long range planning. Basically I propose finding the next best cell of halite to move toward but weighting cells that are in the same direction as the biggest cluster of halite more heavily. The cluster algorithm is kinda like gravity we find the sum vector of all forces exerted on the ship by each halite cell. The force is proportionate to the amount of halite and reduces with distance. We can also add other forces like repelling away from other miners or enemy ships. These functions need not be continuous, they can have step functions at thresholds (ie never mine a cell with less than X halite, don't bother considering cells more than X distance away).
+
+### Planning algorithm
+
+There may be some decisions that will be helpful to have a solver engine.
+
+## Oracles
+Oracles are functions that can answer questions like
+
+* what is the most likely next N moves that my opponents will make?
+* If I generate a miner at this point in the game, am I likely to make a positive return on the investment?
+* What is the path for my miner that will harvest the most halite?
+
+## Board Control
+
+We have a theory that board control is advantageous. The theory is that it is much easier to herd enemy ships than it is to capture them (similar to two kings on a chess board). Effective herding may be able to push enemy miners away from the high value mining locations and secure them for our own miners.
+
+My theory is that board control is trying to maximize the amount of the board where the closest empty ship is owned by us. The larger area that is, the more area our miners will have to safely mine. Territory with large amounts of halite is especially valuable. The border patrol behavior is to make moves that will herd enemy ships away from our territory, move toward vulnerable edges of our perimeter, while expanding our territory into valuable areas of the map.
+
+The other part of board control is harrassment. Which is to send empty ships behind enemy lines to disrupt the area of control of our opponents. Harrassment behavior most likely involves chasing around enemy miners to prevent them from mining high value halite and returning their cargo. Because we have three opponents, investing in harrassment is probably only useful against opponents that are close to us in rank (sabotaging the opponent that is just above us in rank to take his place or just below us to prevent them from taking our place). 
+
+### Herding
+
+The two kings theory of herding is that rather than pursing enemy ships around the board, we establish a boundary and prevent enemy ships from crossing it. 
+
+For instance in the below image, suppose B wants to prevent A from reaching X. B should not move directly onto A. It should stay where it is. 
+
+![image](https://user-images.githubusercontent.com/2446659/88663039-83097000-d0a0-11ea-8c47-a15e45951ea0.png)
+
+If A goes left to B4, B should go to B5
+
+![image](https://user-images.githubusercontent.com/2446659/88663348-180c6900-d0a1-11ea-83cc-a23dcde4b9d3.png)
+
+B can prevent A from ever getting to X, by simply guarding row 5. Its obviously more complicated when there are more ships and halite involved, but the overall concept is that it is easier to block enemy ships from crossing boundaries than it is to chase them down and destroy them.
+
