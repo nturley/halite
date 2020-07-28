@@ -28,7 +28,9 @@ My proposal for greedy mining is to use best cell for short range planning and b
 
 ### Planning algorithm
 
-There may be some decisions that will be helpful to have a solver engine.
+There may be some decisions that will be helpful to have some kind of [local search](https://en.wikipedia.org/wiki/Local_search_(optimization)) engine. In some cases, searching around the search space may have some randomization so it may look like [simulated annealing](https://en.wikipedia.org/wiki/Simulated_annealing).
+
+For example, suppose we want to find out what is the maximum number of halite we can get by some time t_max. A solution would be some Z(t) where t goes from 0 to t_max. Z(0) is our initial location and Z(t_max) is our dropoff location. Z(t) must be adjacent to Z(t-1). The distance between Z(t) and Z(0) must be <= t and the distance between Z(t_max) and Z(t_max - r) must be <= r. No solution probably involves doubling back so If Z(t) == Z(r), |t-r| must be one or less. If this is still too expensive, it may be safe to assume that a solution involves a cell with a large amount of halite so we can try to find solutions that include the cells with the largest amount of halite nearby. That should be enough to constrain the solution space so that we can quickly find a good solution.
 
 ## Oracles
 Oracles are functions that can answer questions like
