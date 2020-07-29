@@ -31,17 +31,18 @@ class DPoint:
 
 
 colors = ['red', 'green', 'blue', 'orange']
-letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*_-+=`~<>,.?/:;"{}[]|'
-def draw_board(board, cell_halite_enable=True):
+letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*_-+=`~<>,.?/:;"{}[]|0123456789'
+def draw_board(board, highlights=None, cell_halite_enable=True, ):
     board_size = board.configuration.size
     board_dim = Dimension(board_size, board_size)
-    margin_dim = Dimension(3, 3)
+    margin_dim = Dimension(20, 20)
     node_dim = Dimension(40, 40)
+    half_node_dim = node_dim * Dimension(0.5, 0.5)
     stroke_size = Dimension(1, 1)
-    side_bar = Dimension(80, 0)
+    side_bar = Dimension(45, 0)
     side_bar_row_height = Dimension(1, 20)
     tiles_dim = board_dim * node_dim + margin_dim + stroke_size
-    svg_dims =  tiles_dim + side_bar
+    svg_dims =  tiles_dim + side_bar+Dimension(100, 0)
 
     svg = ET.Element(
         'svg',
@@ -52,15 +53,33 @@ def draw_board(board, cell_halite_enable=True):
     svg.append(ET.fromstring('''
         <style>
             line { stroke: black }
+            
         </style>'''))
     
+    for x in range(board_dim.width):
+        p = DPoint(x, 0).scale(node_dim, margin_dim + half_node_dim)
+        svg.append(ET.fromstring(f'<text x="{p.x}" y="{margin_dim.height - 7}" text-anchor="middle" font-weight="bold">{x}</text>'))
+    
+    for y in range(board_dim.height):
+        p = DPoint(0, y).scale(node_dim, margin_dim + half_node_dim)
+        svg.append(ET.fromstring(f'<text x="{margin_dim.width - 7}" y="{p.y}" text-anchor="end" alignment-baseline="middle" font-weight="bold">{y}</text>'))
+    
+    if highlights:
+        for highlight in highlights:
+            p = DPoint(highlight.x, highlight.y).scale(node_dim, margin_dim)
+            svg.append(ET.fromstring(f'<rect x="{p.x}" y="{p.y}" width="{node_dim.width}" height="{node_dim.height}" fill="yellow" />'))
+
     # draw dashed gray grid
     for x in range(board_dim.width + 1):
         p = DPoint(x, 0).scale(node_dim, margin_dim)
-        svg.append(ET.fromstring(f'<line x1="{p.x}" x2="{p.x}" y1="5" y2="{tiles_dim.height}" stroke-dasharray="4 8"/>'))
+        dashed = 'stroke-dasharray="4 8"' if x > 0 else ''
+        svg.append(ET.fromstring(f'<line x1="{p.x}" x2="{p.x}" y1="5" y2="{tiles_dim.height}" {dashed}/>'))
     for y in range(board_dim.height + 1):
         p = DPoint(0, y).scale(node_dim, margin_dim)
-        svg.append(ET.fromstring(f'<line x1="5" x2="{tiles_dim.width}" y1="{p.y}" y2="{p.y}" stroke-dasharray="4 8"/>'))
+        dashed = 'stroke-dasharray="4 8"' if y > 0 else ''
+        svg.append(ET.fromstring(f'<line x1="5" x2="{tiles_dim.width}" y1="{p.y}" y2="{p.y}" {dashed}/>'))
+    
+    
         
     # draw cell halite
     if cell_halite_enable:
@@ -83,9 +102,15 @@ def draw_board(board, cell_halite_enable=True):
         svg.append(ET.fromstring(f'<circle cx="{p.x}" cy="{p.y}" r="9" fill="{colors[ship.player_id]}" />'))
         svg.append(ET.fromstring(f'<text x="{p.x}" y="{p.y+5}" text-anchor="middle" fill="white">{sid}</text>'))
         svg.append(ET.fromstring(f'<text x="{p.x+12}" y="{p.y+5}" >{ship.halite}</text>'))
+    
+    for player in board.players.values():
+        p = DPoint(20, player.id).scale(side_bar_row_height, Dimension(tiles_dim.width+side_bar.width, 15))
+        svg.append(ET.fromstring(f'<text x="{p.x}" y="{p.y}" fill="{colors[player.id]}">{colors[player.id][0].upper()}: {player.halite}</text>'))
     return SVG(ET.tostring(svg))
 
-def draw_game(boards):
+def draw_game(boards, boards_highlights=None):
+    if boards_highlights is None:
+        boards_highlights = [None]*len(boards)
     def display_boards(t, cell_halite_enable):
-        return draw_board(boards[t], cell_halite_enable)
-    interact(display_boards, t=widgets.IntSlider(min=0, max=len(boards)-2, step=1, value=0), cell_halite_enable=True)
+        return draw_board(boards[t], boards_highlights[t], cell_halite_enable)
+    interact(display_boards, t=widgets.IntSlider(min=0, max=len(boards)-1, step=1, value=0), cell_halite_enable=True)
