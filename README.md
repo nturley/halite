@@ -1,4 +1,14 @@
-# halite
+# Neil and Bob Halite Bot
+
+### New Features
+### Game Visualizer
+Now you can highlight cells in yellow!
+```python
+def draw_game(boards: Board[], highlights: Point[][])
+```
+It also displays board coordinates along the outside edges as well as the player score on the right hand side.
+![image](https://user-images.githubusercontent.com/2446659/88866668-fd391200-d1d0-11ea-89ef-832ca3be28c2.png)
+
 
 # Strategies
 
@@ -60,4 +70,3 @@ If A goes left to B4, B should go to B5
 ![image](https://user-images.githubusercontent.com/2446659/88663348-180c6900-d0a1-11ea-83cc-a23dcde4b9d3.png)
 
 B can prevent A from ever getting to X, by simply guarding row 5. Its obviously more complicated when there are more ships and halite involved, but the overall concept is that it is easier to block enemy ships from crossing boundaries than it is to chase them down and destroy them.
-
