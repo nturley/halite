@@ -1,4 +1,14 @@
-# halite
+# Neil and Bob Halite Bot
+
+### New Features
+### Game Visualizer
+Now you can highlight cells in yellow!
+```python
+def draw_game(boards: Board[], highlights: Point[][])
+```
+It also displays board coordinates along the outside edges as well as the player score on the right hand side.
+![image](https://user-images.githubusercontent.com/2446659/88866668-fd391200-d1d0-11ea-89ef-832ca3be28c2.png)
+
 
 # Strategies
 
@@ -61,3 +71,22 @@ If A goes left to B4, B should go to B5
 
 B can prevent A from ever getting to X, by simply guarding row 5. Its obviously more complicated when there are more ships and halite involved, but the overall concept is that it is easier to block enemy ships from crossing boundaries than it is to chase them down and destroy them.
 
+## Useful Utilities
+
+precomputing things like distance for every point to every point will be a bit large. 21 x 21 x 21 x 21 x 4 = 760kB. Manhattan distance is pretty cheap anyways so it may not be worth it.
+
+### Vector Distance
+Vector distance gives the shortest distance to a point as a vector (dx, dy). Positive dx means EAST. Positive dy means SOUTH (for some reason). 
+```python
+center = Point(board_size // 2, board_size // 2)
+def vector_distance(origin: Point, dest: Point, board_size: int):
+       return (dest - origin + center) % board_size - center
+```
+### Manhattan Distance
+I think this is the cheapest way to do a Manhattan distance.
+```python
+def manhattan_distance(p1: Point, p2: Point, board_size: int):
+    dp = abs(p2 - p1) % board_size
+    return dp.x + dp.y
+```
+Conveniently, the magnitude of a vector is the same as the manhattan distance.
