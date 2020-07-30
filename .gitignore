@@ -1,3 +1,7 @@
 *.pyc
 .ipynb_checkpoints
 __pycache__
+httv3.py
+optimus.py
+swarm.py
+submission.py
