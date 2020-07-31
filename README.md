@@ -90,9 +90,9 @@ def manhattan_distance(p1: Point, p2: Point, board_size: int):
     return dp.x + dp.y
 ```
 
-## Bot Analysis
+# Bot Analysis
 
-### Optimus
+## Optimus
 
 * Optimus gives each ship a collection of action options, Eliminates options that are unacceptable, and adds options that automatically will fire
   * always move to an adjacent position with a vulnerable enemy ship.
@@ -148,3 +148,30 @@ Always tries to maintain a fleet of 20 ships, near end of game only tries to mai
 3. Even if there is a giant crowd of enemy ships two squares away, it will happy run toward it until it comes right up to them.
 4. No hazard path planning. It just beelines to the target until it notices a hazard. Then it will just move back and forth until it's path clears. It won't even try to choose a different target.
 5. No defensive moves to clear hazards or offensive moves to harrass opponents. It pretty much just mines.
+6. Prone to distraction. A heavy halite ship could be chased for eternity.
+
+## Swarm
+
+### Mining
+
+This mining algorithm is much greedier. It only considers neighboring cells and if it can't find any with a non-neglible amount of halite, then it just patrols around the map.
+
+I can't even find where it returns the halite to the shipyard.
+
+### Shipyard Conversion
+
+If there are no shipyards and the ship can afford it or enemy forces us into a position with no escape.
+
+### Ship Production
+maintain a fleet of 9 or 3 depending on how close to the end of the game we are
+
+### Combat
+Avoid hostile ships always
+
+### Vulnerabilities
+
+This is much more primitive than Optimus
+
+1. Mining is nowhere near optimal.
+2. Each ship only ever considers neighboring cells
+3. No defensive moves or even opportunistic attacks.
