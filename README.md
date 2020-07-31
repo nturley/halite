@@ -89,3 +89,62 @@ def manhattan_distance(p1: Point, p2: Point, board_size: int):
     dp = abs(vector_distance)
     return dp.x + dp.y
 ```
+
+## Bot Analysis
+
+### Optimus
+
+* Optimus gives each ship a collection of action options, Eliminates options that are unacceptable, and adds options that automatically will fire
+  * always move to an adjacent position with a vulnerable enemy ship.
+  * Unacceptable targets seem to be positions that are adjacent to enemy ships with lower halite
+* Optimus assigns each ship a target.
+* The target will add one or more actions to the action collection of the ship.
+* All possible directions are at the back of the list of the action collection.
+
+### Mining Strategy
+Optimus rates each possible destination with a score and sets that max score as the destination as the target for that ship.
+the score for mining is based on the expected halite per turn assuming a path that goes directly to the
+target and then directly to the nearest shipyard. This means that we mine cells that are
+
+* close to us
+* close to a shipyard
+* have a lot of halite
+
+I'm still trying to understand the equation for number of turns to mine. something about logarithm of carried/remaining ratio and then a lookup table.
+
+All of this seems like a lot of work that doesn't take into account the possibility of simply __not__ returning the halite back to the shipyard.
+You can ignore the travel cost to the shipyard if you don't need the money right now to buy more ships. I think this would ignore the value
+in mining two medium cells that are adjacent.
+
+This will miss optimal solutions that involve mining clusters of medium halite especially clusters that are far away.
+
+The score for returning the halite is carried_halite/distance. This is logical because a ship should return home if it is very close
+(the cost for returning is low), or if is very full (the cost of losing the cargo is high).
+
+I'm guessing scipy.optimize tries to find a unique target for each ship.
+
+### Shipyard Conversion
+Only creates a shipyard if
+ * There are no shipyards. Chooses the ship with the most halite.
+ * danger without escape
+ * last turn and we need to return our halite
+
+Doesn't seem to be any planning about where to place the shipyard besides not using a ship that is in danger.
+
+### Combat
+* Vulnerable ships present a better destination target (adds on top of halite)
+* Do not choose a lower halite ship as a destination
+  * This prevents us from trying to mine a square that an enemy ship is already mining.
+
+Enemy ships that are on less than 50 halite seem to be invisible as far as selecting destinations but they do contribute to attack and avoid matrix.
+
+### Ship Production
+Always tries to maintain a fleet of 20 ships, near end of game only tries to maintain 15. Why would you __ever__ create a ship after turn 375?
+
+### Vulnerabilities
+
+1. Mining isn't optimal. Doesn't try to mine near clusters. Doesn't try to mine too far from shipyards.
+2. If it experiences significant ship loss near the end of game, it will waste tremendous resources to replace ships that will never pay themselves off.
+3. Even if there is a giant crowd of enemy ships two squares away, it will happy run toward it until it comes right up to them.
+4. No hazard path planning. It just beelines to the target until it notices a hazard. Then it will just move back and forth until it's path clears. It won't even try to choose a different target.
+5. No defensive moves to clear hazards or offensive moves to harrass opponents. It pretty much just mines.
