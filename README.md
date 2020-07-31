@@ -22,6 +22,15 @@ Our theory is that ships will have a behavior assigned to them by some higher le
 
 The most important one to begin with is mining.
 
+## Parameters. 
+Should I mine my current cell or move to a bigger cell?
+Should I continue mining or return my cargo to the nearest shipyard?
+Should I mine to a far away big cell or a close by small cell?
+Should I mine toward a large cluster of halite or a single cell with more halite?
+Should I mine close to a shipyard or to close to big halite cells?
+From how far away should I chase after vulnerable enemy ships?
+Should I build a new shipyard or return to an existing shipyard?
+
 ## Mining Strategies
 
 ### Greedy Algorithms
@@ -175,3 +184,8 @@ This is much more primitive than Optimus
 1. Mining is nowhere near optimal.
 2. Each ship only ever considers neighboring cells
 3. No defensive moves or even opportunistic attacks.
+
+
+## Replay Analysis
+![image](https://user-images.githubusercontent.com/2446659/89079465-2d58f000-d34c-11ea-9f03-f21822d6517d.png)
+![image](https://user-images.githubusercontent.com/2446659/89079479-38ac1b80-d34c-11ea-9250-96ae17f1d3ed.png)
