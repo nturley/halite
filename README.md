@@ -86,7 +86,6 @@ def vector_distance(origin: Point, dest: Point, board_size: int):
 I think this is the cheapest way to do a Manhattan distance.
 ```python
 def manhattan_distance(p1: Point, p2: Point, board_size: int):
-    dp = abs(p2 - p1) % board_size
+    dp = abs(vector_distance)
     return dp.x + dp.y
 ```
-Conveniently, the magnitude of a vector is the same as the manhattan distance.
