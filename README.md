@@ -187,5 +187,23 @@ This is much more primitive than Optimus
 
 
 ## Replay Analysis
+
+We are blue and win in this game.
 ![image](https://user-images.githubusercontent.com/2446659/89079465-2d58f000-d34c-11ea-9f03-f21822d6517d.png)
+
+We took an early lead because of our second shipyard which made our mining more efficient and allowed us to increase
+our fleet size faster than our opponents. The third shipyard and additional ships pushed us even further to the top.
+
+----
+
+We are green and lose this game.
 ![image](https://user-images.githubusercontent.com/2446659/89079479-38ac1b80-d34c-11ea-9250-96ae17f1d3ed.png)
+
+This game we lost is particularly instructive. The map cannot support more than about 40 ships simultaneously mining.
+None of the players realize this and continue to invest in ships for most of the game. The halite starts to deplete and income starts dropping
+for all players. Halfway through the game, our average harvest per turn drops to about 40 while we have 25 ships mining so each
+ship is averaging about 1.6 halite per turn which means that it takes 312 turns to get a positive return on investment for a ship.
+So every single ship built at this point is a loss. The winner is whoever buys the fewest ships at this point. Orange builds the fewest ships
+and wins.
+
+The amount of money wasted on buying ships was really tragic. We bought 4 ships after turn 250. We lost by about 2000 halite.
