@@ -51,13 +51,11 @@ There may be some decisions that will be helpful to have some kind of [local sea
 
 For example, suppose we want to find out what is the maximum number of halite we can get by some time t_max. A solution would be some Z(t) where t goes from 0 to t_max. Z(0) is our initial location and Z(t_max) is our dropoff location. Z(t) must be adjacent to Z(t-1). The distance between Z(t) and Z(0) must be <= t and the distance between Z(t_max) and Z(t_max - r) must be <= r. No solution probably involves doubling back so If Z(t) == Z(r), |t-r| must be one or less. If this is still too expensive, it may be safe to assume that a solution involves a cell with a large amount of halite so we can try to find solutions that include the cells with the largest amount of halite nearby. That should be enough to constrain the solution space so that we can quickly find a good solution.
 
-## Floyd Marshall
+## Djikstra Path Planning
 
-I think this one is the winner. It simultaneously solves the best mining route for all spaces simultaneously. Instead starting at a ship and searching for halite. We start at halite and search for ships. One of the cool parts of this algorithm is that it can find mining routes for multiple ships at the same time!
+I think this one is the winner. It simultaneously solves the best mining route for all spaces simultaneously.  One of the cool parts of this algorithm is that it can find mining routes for multiple ships at the same time!
 
-The way it works is it calculates how much halite can be mined in one turn from each square. That represents the best move for each position for t_max = 1. Then we expand each of those values outward one square. We compare mining from the same square twice and moving to a neighbor and mining it once. This represents the best move for t_max = 2. We keep iterating over the matrix until we reach all of our ships at our target t_max.
-
-This finds the best move for one ship and the longer it runs, the longer t_max we solve for. This exploits the fact that the best solution for t_max=N at point P is related to the best solution for t_max = N + 1 at point P's neighbors.
+See [here](DjikstraMining.ipynb) for more details.
 
 ## Oracles
 Oracles are functions that can answer questions like
