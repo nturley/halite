@@ -51,6 +51,12 @@ There may be some decisions that will be helpful to have some kind of [local sea
 
 For example, suppose we want to find out what is the maximum number of halite we can get by some time t_max. A solution would be some Z(t) where t goes from 0 to t_max. Z(0) is our initial location and Z(t_max) is our dropoff location. Z(t) must be adjacent to Z(t-1). The distance between Z(t) and Z(0) must be <= t and the distance between Z(t_max) and Z(t_max - r) must be <= r. No solution probably involves doubling back so If Z(t) == Z(r), |t-r| must be one or less. If this is still too expensive, it may be safe to assume that a solution involves a cell with a large amount of halite so we can try to find solutions that include the cells with the largest amount of halite nearby. That should be enough to constrain the solution space so that we can quickly find a good solution.
 
+## Djikstra Path Planning
+
+I think this one is the winner. It simultaneously solves the best mining route for all spaces simultaneously.  One of the cool parts of this algorithm is that it can find mining routes for multiple ships at the same time!
+
+See [here](DjikstraMining.ipynb) for more details.
+
 ## Oracles
 Oracles are functions that can answer questions like
 
