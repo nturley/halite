@@ -31,8 +31,8 @@ class DPoint:
 
 
 colors = ['red', 'green', 'blue', 'orange']
-letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*_-+=`~<>,.?/:;"{}[]|0123456789'
-def draw_board(board, highlights=None, cell_halite_enable=True, ):
+letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*_-+=`~,.?/:;"{}[]|0123456789'
+def draw_board(board, highlights=[], sequence=[], cell_halite_enable=True):
     board_size = board.configuration.size
     board_dim = Dimension(board_size, board_size)
     margin_dim = Dimension(20, 20)
@@ -64,10 +64,9 @@ def draw_board(board, highlights=None, cell_halite_enable=True, ):
         p = DPoint(0, y).scale(node_dim, margin_dim + half_node_dim)
         svg.append(ET.fromstring(f'<text x="{margin_dim.width - 7}" y="{p.y}" text-anchor="end" alignment-baseline="middle" font-weight="bold">{y}</text>'))
     
-    if highlights:
-        for highlight in highlights:
-            p = DPoint(highlight.x, highlight.y).scale(node_dim, margin_dim)
-            svg.append(ET.fromstring(f'<rect x="{p.x}" y="{p.y}" width="{node_dim.width}" height="{node_dim.height}" fill="yellow" />'))
+    for highlight in highlights:
+        p = DPoint(highlight.x, highlight.y).scale(node_dim, margin_dim)
+        svg.append(ET.fromstring(f'<rect x="{p.x}" y="{p.y}" width="{node_dim.width}" height="{node_dim.height}" fill="yellow" />'))
 
     # draw dashed gray grid
     for x in range(board_dim.width + 1):
@@ -106,11 +105,17 @@ def draw_board(board, highlights=None, cell_halite_enable=True, ):
     for player in board.players.values():
         p = DPoint(20, player.id).scale(side_bar_row_height, Dimension(tiles_dim.width+side_bar.width, 15))
         svg.append(ET.fromstring(f'<text x="{p.x}" y="{p.y}" fill="{colors[player.id]}">{colors[player.id][0].upper()}: {player.halite}</text>'))
+    
+    for p1, p2 in zip(sequence[:-1], sequence[1:]):
+        dp1 = DPoint(p1.x, p1.y).scale(node_dim, margin_dim + node_dim * Dimension(0.5, 0.6))
+        dp2 = DPoint(p2.x, p2.y).scale(node_dim, margin_dim + node_dim * Dimension(0.5, 0.6))
+        svg.append(ET.fromstring(f'<line x1="{dp1.x}" y1="{dp1.y}" x2="{dp2.x}" y2="{dp2.y}" />'))
+    
     return SVG(ET.tostring(svg))
 
 def draw_game(boards, boards_highlights=None):
     if boards_highlights is None:
-        boards_highlights = [None]*len(boards)
+        boards_highlights = [[]]*len(boards)
     def display_boards(t, cell_halite_enable):
-        return draw_board(boards[t], boards_highlights[t], cell_halite_enable)
+        return draw_board(boards[t], boards_highlights[t], [], cell_halite_enable)
     interact(display_boards, t=widgets.IntSlider(min=0, max=len(boards)-1, step=1, value=0), cell_halite_enable=True)
