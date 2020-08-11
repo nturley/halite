@@ -194,6 +194,19 @@ This is much more primitive than Optimus
 
 ## Replay Analysis
 
+The factors that seem to indicate the game outcome are
+
+1. What is the mining efficiency? (halite/ship/turn)
+    - additional shipyards, how do you choose mining paths? How often do you return?
+2. How many and when were ships lost due to collisions?
+    - expected total game loss = mining efficiency * decrease in ship lifetime
+3. When was ship production halted?
+    - We will be riding zero halite prior to this point, and then investing nearly zero halite in ships after this point
+    - when marginal ship benefit goes below zero
+
+* 2 and 3 involve estimating what the value of a ship is over it's lifetime.
+* 1 and 2 involve path planning.
+
 We are blue and win in this game.
 ![image](https://user-images.githubusercontent.com/2446659/89079465-2d58f000-d34c-11ea-9f03-f21822d6517d.png)
 
