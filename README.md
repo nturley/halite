@@ -16,44 +16,16 @@ It also displays board coordinates along the outside edges as well as the player
 Our theory is that ships will have a behavior assigned to them by some higher level strategy engine. The behaviors will probably be things like
 
 * Mine
-* Return
-* Harrass
+* Harrass/Raid
 * Border Patrol
 
 The most important one to begin with is mining.
 
-## Parameters. 
-Should I mine my current cell or move to a bigger cell?
-Should I continue mining or return my cargo to the nearest shipyard?
-Should I mine to a far away big cell or a close by small cell?
-Should I mine toward a large cluster of halite or a single cell with more halite?
-Should I mine close to a shipyard or to close to big halite cells?
-From how far away should I chase after vulnerable enemy ships?
-Should I build a new shipyard or return to an existing shipyard?
-
-## Mining Strategies
-
-### Greedy Algorithms
-
-There are three greedy objectives that need to be balanced
-
-1. Should I stay on my current cell?
-2. Should I move toward the best cell (closest distance, most halite)?
-3. Should I move toward the biggest cluster of halite?
-
-An optimal path probably involves walking toward the largest cluster and ocasionally mining a bit on the way. When you hit a particularly large halite cell then you may need to mine it for several turns before moving on.
-
-My proposal for greedy mining is to use best cell for short range planning and biggest cluster for long range planning. Basically I propose finding the next best cell of halite to move toward but weighting cells that are in the same direction as the biggest cluster of halite more heavily. The cluster algorithm is kinda like gravity we find the sum vector of all forces exerted on the ship by each halite cell. The force is proportionate to the amount of halite and reduces with distance. We can also add other forces like repelling away from other miners or enemy ships. These functions need not be continuous, they can have step functions at thresholds (ie never mine a cell with less than X halite, don't bother considering cells more than X distance away).
-
-### Planning algorithm
-
-There may be some decisions that will be helpful to have some kind of [local search](https://en.wikipedia.org/wiki/Local_search_(optimization)) engine. In some cases, searching around the search space may have some randomization so it may look like [simulated annealing](https://en.wikipedia.org/wiki/Simulated_annealing).
-
-For example, suppose we want to find out what is the maximum number of halite we can get by some time t_max. A solution would be some Z(t) where t goes from 0 to t_max. Z(0) is our initial location and Z(t_max) is our dropoff location. Z(t) must be adjacent to Z(t-1). The distance between Z(t) and Z(0) must be <= t and the distance between Z(t_max) and Z(t_max - r) must be <= r. No solution probably involves doubling back so If Z(t) == Z(r), |t-r| must be one or less. If this is still too expensive, it may be safe to assume that a solution involves a cell with a large amount of halite so we can try to find solutions that include the cells with the largest amount of halite nearby. That should be enough to constrain the solution space so that we can quickly find a good solution.
-
 ## Djikstra Path Planning
 
-I think this one is the winner. It simultaneously solves the best mining route for all spaces simultaneously.  One of the cool parts of this algorithm is that it can find mining routes for multiple ships at the same time!
+I think this one is the winner. Given a set of target points it will find the best paths to all points on the board of length t. We use the result from t-1 to calculate t. So this algorithm should be linear complexity with respect to t. We use some objective function to evaluate the relative merits of different paths.
+
+The objective function can be mining halite, increasing board control, avoiding hazards or a mixture of all three.
 
 See [here](DjikstraMining.ipynb) for more details.
 
